@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "MLB Player Dimensions"
+  title: "Physical Profiles"
   navbar:
     left:
       - href: index.qmd
