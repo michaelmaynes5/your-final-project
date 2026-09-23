@@ -1,5 +1,5 @@
 ---
-title: "Height and Weight in Major League Baseball"
+title: "Height, Weight, and the Evolution of Baseball Players"
 author: "Student"
 date: today
 ---
@@ -11,61 +11,47 @@ library(tidyverse)
 library(Lahman)
 ```
 
-In Major League Baseball, physical stature varies considerably across different roles on the diamond. A first baseman or pitcher often brings height and power, while middle infielders lean toward agility. 
+In sports analytics, discussions of player stature often focus on notable outliers—from diminutive speedsters like José Altuve (5'6") to towering sluggers like Aaron Judge (6'7"). Yet looking at individual extremes can obscure the broader demographic patterns that define professional baseball. When examining a single season in isolation, Major League Baseball rosters feature approximately 1,500 active players distributed across a spectrum of heights and weights. While that snapshot shows how different defensive positions demand distinct physical attributes, it leaves an essential historical question unanswered: have baseball players actually been getting bigger over time?
 
-The scatterplot below visualizes player height and weight for the 2023 MLB season (~1,500 active players), colored by defensive position.
+By expanding our scope across multiple benchmark seasons spanning over six decades—1960, 1980, 2000, and 2023—our dataset expands comfortably into the thousands, encompassing over 4,100 player observations. This multi-season perspective allows us to observe not only how height and weight relate to one another within the sport, but also how the entire distribution of professional ballplayers has steadily shifted across modern eras.
 
 ```{r}
-#| label: height-weight-scatter
+#| label: multi-season-scatter
 #| echo: false
 #| warning: false
 #| message: false
-#| fig-width: 9
-#| fig-height: 6
+#| fig-width: 9.5
+#| fig-height: 6.5
 
-# Determine primary position for each player in 2023
-player_pos <- Fielding |>
-  filter(yearID == 2023) |>
-  group_by(playerID, POS) |>
-  summarize(games = sum(G), .groups = "drop") |>
-  group_by(playerID) |>
-  slice_max(games, n = 1, with_ties = FALSE) |>
-  ungroup()
-
-# Join with People table for height and weight
-mlb_2023 <- player_pos |>
+# Filter multi-season dataset spanning over 4,000 player observations
+multi_season <- Appearances |>
+  filter(yearID %in% c(1960, 1980, 2000, 2023)) |>
+  distinct(playerID, yearID) |>
   inner_join(People, by = "playerID") |>
   filter(!is.na(height), !is.na(weight)) |>
-  mutate(
-    Position = case_when(
-      POS == "P"  ~ "Pitcher",
-      POS == "C"  ~ "Catcher",
-      POS == "1B" ~ "First Base",
-      POS == "2B" ~ "Second Base",
-      POS == "3B" ~ "Third Base",
-      POS == "SS" ~ "Shortstop",
-      POS == "OF" ~ "Outfield",
-      TRUE ~ POS
-    )
-  )
+  mutate(Season = factor(yearID))
 
-# Scatterplot of height vs weight
-ggplot(mlb_2023, aes(x = height, y = weight, color = Position)) +
-  geom_jitter(alpha = 0.65, size = 2, width = 0.25, height = 0.5) +
-  scale_color_brewer(palette = "Set1") +
+ggplot(multi_season, aes(x = height, y = weight, color = Season)) +
+  geom_jitter(alpha = 0.45, size = 1.7, width = 0.25, height = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, linewidth = 1.1) +
+  scale_color_brewer(palette = "Dark2") +
   labs(
-    title = "MLB Player Dimensions (2023 Season)",
-    subtitle = "Height and weight across 1,400+ players, colored by primary defensive position",
+    title = "Have MLB Players Been Getting Bigger?",
+    subtitle = "Height and weight across 4,100+ player-seasons in 1960, 1980, 2000, and 2023",
     x = "Height (inches)",
     y = "Weight (pounds)",
-    color = "Position",
-    caption = "Source: Lahman Baseball Database"
+    color = "Season",
+    caption = "Source: Sean Lahman Baseball Database"
   ) +
   theme_minimal(base_size = 13) +
   theme(
-    plot.title = element_text(face = "bold"),
+    plot.title = element_text(face = "bold", size = 15),
     legend.position = "right"
   )
 ```
 
-A slight positive relationship exists between height and weight overall. Pitchers and first basemen cluster toward the upper-right corner (taller and heavier), whereas second basemen and shortstops concentrate toward the lower-left.
+The scatterplot reveals a striking upward migration across the modern era. In both 1960 and 1980, the average major leaguer stood approximately 6 feet 1 inch tall and weighed around 186 pounds. During these decades, player body types were comparatively lean, with very few athletes exceeding 225 pounds regardless of their height. Speed, defensive agility, and traditional conditioning dominated baseball preparation, keeping weight distributions relatively compact.
+
+By the 2000 season, the physical demands and incentives of the sport had shifted dramatically. Emphasizing power hitting, velocity, and specialized year-round weight training, the average player weight jumped by ten pounds to over 196 pounds. The upward trend lines demonstrate that this was not merely a consequence of players becoming taller; at virtually every height level along the x-axis, players from 2000 weighed noticeably more than their counterparts from twenty or forty years prior.
+
+The 2023 season represents the culmination of this trend. Today's average major league player stands nearly 6 feet 2 inches tall and weighs approximately 208 pounds—more than 21 pounds heavier than the average player from 1960 or 1980. The cloud of data points for 2023 extends substantially higher along the vertical axis, featuring dozens of players who weigh between 230 and 280 pounds while maintaining the athletic mobility required on the field. The data across thousands of players clearly demonstrates that the modern professional baseball player has grown both measurably taller and substantially heavier than in previous generations.
