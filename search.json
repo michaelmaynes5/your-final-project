@@ -1,0 +1,23 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Height and Weight in Major League Baseball",
+    "section": "",
+    "text": "In Major League Baseball, physical stature varies considerably across different roles on the diamond. A first baseman or pitcher often brings height and power, while middle infielders lean toward agility.\nThe scatterplot below visualizes player height and weight for the 2023 MLB season (~1,500 active players), colored by defensive position.\n\n\n\n\n\n\n\n\n\nA slight positive relationship exists between height and weight overall. Pitchers and first basemen cluster toward the upper-right corner (taller and heavier), whereas second basemen and shortstops concentrate toward the lower-left."
+  },
+  {
+    "objectID": "exploration.html",
+    "href": "exploration.html",
+    "title": "Exploration",
+    "section": "",
+    "text": "The Exploration tab allows you to investigate the physical profiles of MLB players across defensive positions during the 2023 season.\n\nPosition Averages\nThe table below summarizes the average height, average weight, and active player count by position.\n\n\n\n\n\n\n\n\nInteractive Height vs. Weight Scatter\nUse the dropdown filter below to pick a specific position or view all players simultaneously. You can also hover over individual points to inspect each athlete’s details, or double-click items in the legend.\n\n\n\nSelect Position to Filter:"
+  },
+  {
+    "objectID": "story.html",
+    "href": "story.html",
+    "title": "The Changing Shape of the Game",
+    "section": "",
+    "text": "Baseball has undergone an astonishing physical evolution over the past century. While casual fans often think of strategy shifts—from small-ball bunting to the home run revolutions—the underlying human engine has transformed just as dramatically. Athletes today occupy an entirely different physical profile than their predecessors from a century ago.\nTo understand whether baseball players have been getting bigger, we can examine player dimensions across three benchmark seasons spanning more than one hundred years: 1920 (the onset of the live-ball era), 1970 (the expansion era), and 2023 (the modern Statcast era). Combining these seasons brings thousands of players into the frame.\n\n\n\n\n\n\n\n\n\nIn 1920, the typical Major League ballplayer stood approximately 5 feet 10.5 inches tall and weighed an average of 173 pounds. Heavier athletes were rare anomalies; players relied heavily on foot speed, contact hitting, and quick fielding reflexes.\nBy 1970, average height had climbed to nearly 6 feet 1 inch, and average weight increased to 186 pounds. The expansion of training regimens, improvements in childhood nutrition, and broader talent scouting pools contributed to a steady upward march in size.\nFast forward to 2023, and the cloud of data points shifts decisively toward the upper-right corner. The average modern player stands 6 feet 2 inches tall and weighs nearly 208 pounds—a full 35-pound increase over the 1920 average. Modern pitchers, power hitters, and specialized strength training have raised the baseline physical requirements of professional baseball to historic heights."
+  }
+]
