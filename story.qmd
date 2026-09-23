@@ -1,0 +1,66 @@
+---
+title: "The Changing Shape of the Game"
+author: "Student"
+date: today
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(Lahman)
+```
+
+Baseball has undergone an astonishing physical evolution over the past century. While casual fans often think of strategy shifts—from small-ball bunting to the home run revolutions—the underlying human engine has transformed just as dramatically. Athletes today occupy an entirely different physical profile than their predecessors from a century ago.
+
+To understand whether baseball players have been getting bigger, we can examine player dimensions across three benchmark seasons spanning more than one hundred years: 1920 (the onset of the live-ball era), 1970 (the expansion era), and 2023 (the modern Statcast era). Combining these seasons brings thousands of players into the frame.
+
+```{r}
+#| label: era-scatter
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 6
+
+eras_data <- Appearances |>
+  filter(yearID %in% c(1920, 1970, 2023)) |>
+  distinct(playerID, yearID) |>
+  inner_join(People, by = "playerID") |>
+  filter(!is.na(height), !is.na(weight)) |>
+  mutate(
+    Era = factor(
+      case_when(
+        yearID == 1920 ~ "1920 (Live-Ball Era)",
+        yearID == 1970 ~ "1970 (Expansion Era)",
+        yearID == 2023 ~ "2023 (Modern Era)"
+      ),
+      levels = c("1920 (Live-Ball Era)", "1970 (Expansion Era)", "2023 (Modern Era)")
+    )
+  )
+
+ggplot(eras_data, aes(x = height, y = weight, color = Era)) +
+  geom_jitter(alpha = 0.55, size = 1.8, width = 0.3, height = 0.8) +
+  scale_color_manual(values = c("1920 (Live-Ball Era)" = "#2b83ba", 
+                                "1970 (Expansion Era)" = "#fdae61", 
+                                "2023 (Modern Era)" = "#d7191c")) +
+  labs(
+    title = "A Century of Growth: Height vs. Weight Across Three Eras",
+    subtitle = "Nearly 3,000 MLB players across 1920, 1970, and 2023",
+    x = "Height (inches)",
+    y = "Weight (pounds)",
+    color = "Era",
+    caption = "Source: Lahman Baseball Database"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+In 1920, the typical Major League ballplayer stood approximately 5 feet 10.5 inches tall and weighed an average of 173 pounds. Heavier athletes were rare anomalies; players relied heavily on foot speed, contact hitting, and quick fielding reflexes.
+
+By 1970, average height had climbed to nearly 6 feet 1 inch, and average weight increased to 186 pounds. The expansion of training regimens, improvements in childhood nutrition, and broader talent scouting pools contributed to a steady upward march in size.
+
+Fast forward to 2023, and the cloud of data points shifts decisively toward the upper-right corner. The average modern player stands 6 feet 2 inches tall and weighs nearly 208 pounds—a full 35-pound increase over the 1920 average. Modern pitchers, power hitters, and specialized strength training have raised the baseline physical requirements of professional baseball to historic heights.

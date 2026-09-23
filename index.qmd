@@ -1,0 +1,71 @@
+---
+title: "Height and Weight in Major League Baseball"
+author: "Student"
+date: today
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(Lahman)
+```
+
+In Major League Baseball, physical stature varies considerably across different roles on the diamond. A first baseman or pitcher often brings height and power, while middle infielders lean toward agility. 
+
+The scatterplot below visualizes player height and weight for the 2023 MLB season (~1,500 active players), colored by defensive position.
+
+```{r}
+#| label: height-weight-scatter
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 6
+
+# Determine primary position for each player in 2023
+player_pos <- Fielding |>
+  filter(yearID == 2023) |>
+  group_by(playerID, POS) |>
+  summarize(games = sum(G), .groups = "drop") |>
+  group_by(playerID) |>
+  slice_max(games, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+# Join with People table for height and weight
+mlb_2023 <- player_pos |>
+  inner_join(People, by = "playerID") |>
+  filter(!is.na(height), !is.na(weight)) |>
+  mutate(
+    Position = case_when(
+      POS == "P"  ~ "Pitcher",
+      POS == "C"  ~ "Catcher",
+      POS == "1B" ~ "First Base",
+      POS == "2B" ~ "Second Base",
+      POS == "3B" ~ "Third Base",
+      POS == "SS" ~ "Shortstop",
+      POS == "OF" ~ "Outfield",
+      TRUE ~ POS
+    )
+  )
+
+# Scatterplot of height vs weight
+ggplot(mlb_2023, aes(x = height, y = weight, color = Position)) +
+  geom_jitter(alpha = 0.65, size = 2, width = 0.25, height = 0.5) +
+  scale_color_brewer(palette = "Set1") +
+  labs(
+    title = "MLB Player Dimensions (2023 Season)",
+    subtitle = "Height and weight across 1,400+ players, colored by primary defensive position",
+    x = "Height (inches)",
+    y = "Weight (pounds)",
+    color = "Position",
+    caption = "Source: Lahman Baseball Database"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "right"
+  )
+```
+
+A slight positive relationship exists between height and weight overall. Pitchers and first basemen cluster toward the upper-right corner (taller and heavier), whereas second basemen and shortstops concentrate toward the lower-left.

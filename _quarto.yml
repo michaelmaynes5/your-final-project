@@ -1,0 +1,18 @@
+project:
+  type: website
+
+website:
+  title: "MLB Player Dimensions"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: exploration.qmd
+        text: Exploration
+      - href: story.qmd
+        text: Story
+
+format:
+  html:
+    theme: cosmo
+    toc: false

@@ -1,0 +1,110 @@
+---
+title: "Exploration"
+author: "Student"
+date: today
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(Lahman)
+library(crosstalk)
+library(plotly)
+library(DT)
+```
+
+The Exploration tab allows you to investigate the physical profiles of MLB players across defensive positions during the 2023 season.
+
+### Position Averages
+
+The table below summarizes the average height, average weight, and active player count by position.
+
+```{r}
+#| label: position-averages
+#| echo: false
+#| message: false
+#| warning: false
+
+# Primary position for each player
+player_pos <- Fielding |>
+  filter(yearID == 2023) |>
+  group_by(playerID, POS) |>
+  summarize(games = sum(G), .groups = "drop") |>
+  group_by(playerID) |>
+  slice_max(games, n = 1, with_ties = FALSE) |>
+  ungroup()
+
+mlb_2023 <- player_pos |>
+  inner_join(People, by = "playerID") |>
+  filter(!is.na(height), !is.na(weight)) |>
+  mutate(
+    Position = case_when(
+      POS == "P"  ~ "Pitcher",
+      POS == "C"  ~ "Catcher",
+      POS == "1B" ~ "First Base",
+      POS == "2B" ~ "Second Base",
+      POS == "3B" ~ "Third Base",
+      POS == "SS" ~ "Shortstop",
+      POS == "OF" ~ "Outfield",
+      TRUE ~ POS
+    ),
+    Player = paste(nameFirst, nameLast)
+  )
+
+# Compute averages by position
+pos_summary <- mlb_2023 |>
+  group_by(Position) |>
+  summarize(
+    Players = n(),
+    `Avg Height (in)` = round(mean(height), 1),
+    `Avg Weight (lbs)` = round(mean(weight), 1),
+    .groups = "drop"
+  ) |>
+  arrange(desc(`Avg Weight (lbs)`))
+
+datatable(
+  pos_summary,
+  rownames = FALSE,
+  options = list(pageLength = 10, dom = "t")
+)
+```
+
+### Interactive Height vs. Weight Scatter
+
+Use the dropdown filter below to pick a specific position or view all players simultaneously. You can also hover over individual points to inspect each athlete's details, or double-click items in the legend.
+
+```{r}
+#| label: interactive-scatter
+#| echo: false
+#| warning: false
+#| message: false
+
+sd <- SharedData$new(mlb_2023)
+
+filter_select(
+  id = "pos_filter",
+  label = "Select Position to Filter:",
+  sharedData = sd,
+  group = ~Position,
+  multiple = TRUE
+)
+
+plot_ly(
+  sd,
+  x = ~height,
+  y = ~weight,
+  color = ~Position,
+  text = ~paste0("Player: ", Player, "<br>Position: ", Position, "<br>Height: ", height, " in<br>Weight: ", weight, " lbs"),
+  hoverinfo = "text",
+  type = "scatter",
+  mode = "markers",
+  marker = list(size = 7, opacity = 0.7)
+) |>
+  layout(
+    title = "Interactive MLB Player Height & Weight (2023)",
+    xaxis = list(title = "Height (inches)"),
+    yaxis = list(title = "Weight (pounds)"),
+    legend = list(title = list(text = "<b>Position</b>"))
+  )
+```
