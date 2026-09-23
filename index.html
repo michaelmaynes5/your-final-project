@@ -9,7 +9,7 @@
 <meta name="author" content="Student">
 <meta name="dcterms.date" content="2026-09-23">
 
-<title>Height and Weight in Major League Baseball – MLB Player Dimensions</title>
+<title>Height, Weight, and the Evolution of Baseball Players – MLB Player Dimensions</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -125,7 +125,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Height and Weight in Major League Baseball</h1>
+<h1 class="title">Height, Weight, and the Evolution of Baseball Players</h1>
 </div>
 
 
@@ -154,18 +154,20 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>In Major League Baseball, physical stature varies considerably across different roles on the diamond. A first baseman or pitcher often brings height and power, while middle infielders lean toward agility.</p>
-<p>The scatterplot below visualizes player height and weight for the 2023 MLB season (~1,500 active players), colored by defensive position.</p>
+<p>In sports analytics, discussions of player stature often focus on notable outliers—from diminutive speedsters like José Altuve (5’6”) to towering sluggers like Aaron Judge (6’7”). Yet looking at individual extremes can obscure the broader demographic patterns that define professional baseball. When examining a single season in isolation, Major League Baseball rosters feature approximately 1,500 active players distributed across a spectrum of heights and weights. While that snapshot shows how different defensive positions demand distinct physical attributes, it leaves an essential historical question unanswered: have baseball players actually been getting bigger over time?</p>
+<p>By expanding our scope across multiple benchmark seasons spanning over six decades—1960, 1980, 2000, and 2023—our dataset expands comfortably into the thousands, encompassing over 4,100 player observations. This multi-season perspective allows us to observe not only how height and weight relate to one another within the sport, but also how the entire distribution of professional ballplayers has steadily shifted across modern eras.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/height-weight-scatter-1.png" class="img-fluid figure-img" width="864"></p>
+<p><img src="index_files/figure-html/multi-season-scatter-1.png" class="img-fluid figure-img" width="912"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>A slight positive relationship exists between height and weight overall. Pitchers and first basemen cluster toward the upper-right corner (taller and heavier), whereas second basemen and shortstops concentrate toward the lower-left.</p>
+<p>The scatterplot reveals a striking upward migration across the modern era. In both 1960 and 1980, the average major leaguer stood approximately 6 feet 1 inch tall and weighed around 186 pounds. During these decades, player body types were comparatively lean, with very few athletes exceeding 225 pounds regardless of their height. Speed, defensive agility, and traditional conditioning dominated baseball preparation, keeping weight distributions relatively compact.</p>
+<p>By the 2000 season, the physical demands and incentives of the sport had shifted dramatically. Emphasizing power hitting, velocity, and specialized year-round weight training, the average player weight jumped by ten pounds to over 196 pounds. The upward trend lines demonstrate that this was not merely a consequence of players becoming taller; at virtually every height level along the x-axis, players from 2000 weighed noticeably more than their counterparts from twenty or forty years prior.</p>
+<p>The 2023 season represents the culmination of this trend. Today’s average major league player stands nearly 6 feet 2 inches tall and weighs approximately 208 pounds—more than 21 pounds heavier than the average player from 1960 or 1980. The cloud of data points for 2023 extends substantially higher along the vertical axis, featuring dozens of players who weigh between 230 and 280 pounds while maintaining the athletic mobility required on the field. The data across thousands of players clearly demonstrates that the modern professional baseball player has grown both measurably taller and substantially heavier than in previous generations.</p>
 
 
 
@@ -243,7 +245,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/michaelmaynes5\.github\.io\/your-final-project\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
