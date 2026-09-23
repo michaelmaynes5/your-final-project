@@ -11,6 +11,8 @@ website:
         text: Exploration
       - href: story.qmd
         text: Story
+      - href: simulator.qmd
+        text: Simulator
 
 format:
   html:

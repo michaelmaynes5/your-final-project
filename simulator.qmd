@@ -1,0 +1,117 @@
+---
+title: "Historical Growth Simulator"
+author: "Student"
+date: today
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(Lahman)
+library(plotly)
+library(DT)
+```
+
+This simulator animates the physical evolution of Major League Baseball players across a century of baseball history (1920–2020). By keeping the axes constant, you can press **Play** (or drag the slider) to watch thousands of players steadily expand in both height and weight over time.
+
+### Animated Decade-by-Decade Scatter
+
+Click **Play** below or drag the year slider to simulate the passage of time across 11 distinct decades. Notice how the central mass of players drifts toward the upper-right quadrant.
+
+```{r}
+#| label: animated-simulator
+#| echo: false
+#| warning: false
+#| message: false
+
+# Sample decade snapshots from 1920 to 2020
+decades <- seq(1920, 2020, by = 10)
+
+sim_data <- Appearances |>
+  filter(yearID %in% decades) |>
+  distinct(playerID, yearID) |>
+  inner_join(People, by = "playerID") |>
+  filter(!is.na(height), !is.na(weight)) |>
+  mutate(
+    Year = factor(yearID),
+    Player = paste(nameFirst, nameLast)
+  )
+
+plot_ly(
+  sim_data,
+  x = ~height,
+  y = ~weight,
+  frame = ~Year,
+  text = ~paste0("<b>", Player, "</b><br>Height: ", height, " in<br>Weight: ", weight, " lbs"),
+  hoverinfo = "text",
+  type = "scatter",
+  mode = "markers",
+  marker = list(size = 6, color = "#2c3e50", opacity = 0.55)
+) |>
+  layout(
+    title = "MLB Player Dimensions (Decade Snapshots: 1920–2020)",
+    xaxis = list(title = "Height (inches)", range = c(64, 84)),
+    yaxis = list(title = "Weight (pounds)", range = c(130, 290)),
+    margin = list(t = 50, b = 50)
+  ) |>
+  animation_opts(
+    frame = 900,
+    transition = 450,
+    easing = "cubic-in-out"
+  ) |>
+  animation_slider(
+    currentvalue = list(prefix = "Active Season: ", font = list(color = "#2c3e50", size = 14))
+  )
+```
+
+### Decade Summary Table
+
+The table below calculates the exact average height, average weight, and Body Mass Index (BMI) for each simulated decade.
+
+```{r}
+#| label: decade-summary
+#| echo: false
+#| warning: false
+#| message: false
+
+decade_table <- sim_data |>
+  group_by(Decade = Year) |>
+  summarize(
+    `Active Players` = n(),
+    `Avg Height (in)` = round(mean(height), 1),
+    `Avg Weight (lbs)` = round(mean(weight), 1),
+    `Avg BMI` = round(mean((weight / (height^2)) * 703), 1),
+    .groups = "drop"
+  )
+
+datatable(
+  decade_table,
+  rownames = FALSE,
+  options = list(pageLength = 11, dom = "t")
+)
+```
+
+### Average Trajectory Over Time
+
+```{r}
+#| label: trajectory-plot
+#| echo: false
+#| warning: false
+#| message: false
+#| fig-width: 9
+#| fig-height: 4.5
+
+p_trend <- decade_table |>
+  mutate(Year = as.numeric(as.character(Decade)))
+
+plot_ly(p_trend, x = ~Year) |>
+  add_lines(y = ~`Avg Weight (lbs)`, name = "Avg Weight (lbs)", line = list(color = "#e74c3c", width = 3)) |>
+  add_lines(y = ~`Avg Height (in)` * 2.5, name = "Avg Height (scaled x2.5)", line = list(color = "#3498db", width = 3, dash = "dash")) |>
+  layout(
+    title = "Historical Trajectory of Player Averages (1920–2020)",
+    xaxis = list(title = "Season"),
+    yaxis = list(title = "Value"),
+    legend = list(orientation = "h", y = -0.2)
+  )
+```
